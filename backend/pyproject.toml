@@ -10,6 +10,7 @@ uvicorn = {extras = ["standard"], version = "^0.24.0.post1"}
 fastapi = "^0.109.1"
 python-multipart = "^0.0.7"
 email-validator = "^2.1.0.post1"
+celery = "^5.3.5"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 tenacity = "^8.2.3"
 pydantic = ">2.0"
@@ -33,6 +34,7 @@ mypy = "^1.8.0"
 ruff = "^0.2.2"
 pre-commit = "^3.6.2"
 types-passlib = "^1.7.7.20240106"
+celery-types = "^0.22.0"
 coverage = "^7.4.3"
 
 [build-system]
