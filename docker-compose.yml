@@ -12,6 +12,24 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
 
+  metabase:
+    image: metabase/metabase
+    restart: always
+    networks:
+      - traefik-public
+      - default
+    depends_on:
+      - db
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./infrastructure/metabase:/metabase-data
+    environment:
+      - MB_DB_FILE=/metabase-data/metabase.db
+      # - MB_H2_DB_JDBC_URL=jdbc:h2:file:/metabase-data/metabase.db/metabase.db
+    deploy:
+      replicas: 1
+
   adminer:
     image: adminer
     restart: always
@@ -124,6 +142,7 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect,${STACK_NAME?Variable not set}-www-redirect
 volumes:
   app-db-data:
+
 
 networks:
   traefik-public:
