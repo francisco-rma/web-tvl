@@ -1,4 +1,4 @@
-from pydantic import EmailStr
+from pydantic import BaseModel, EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -108,3 +108,13 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=40)
+
+
+# JSON payload with TVL settings
+class TVLSettings(BaseModel):
+    size: int
+    lower_bound: float
+    upper_bound: float
+    mean: float
+    std: float
+    id_user: int | None = None

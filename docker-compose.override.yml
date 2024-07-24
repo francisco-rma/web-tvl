@@ -81,24 +81,12 @@ services:
         INSTALL_DEV: ${INSTALL_DEV-true}
     # command: sleep infinity  # Infinite loop to keep container alive doing nothing
     command: /start-reload.sh
-   
+
   mailcatcher:
     image: schickling/mailcatcher
     ports:
       - "1080:1080"
       - "1025:1025"
-
-  celeryworker:
-    restart: "no"
-    volumes:
-      - ./backend/:/app
-    environment:
-      - RUN=celery worker -A app.worker -l info -Q main-queue -c 1
-    build:
-      context: ./backend
-      dockerfile: celeryworker.dockerfile
-      args:
-        INSTALL_DEV: ${INSTALL_DEV-true}
 
   celeryworker:
     restart: "no"

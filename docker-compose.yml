@@ -54,9 +54,9 @@ services:
       - traefik.http.services.${STACK_NAME?Variable not set}-adminer.loadbalancer.server.port=8080
 
   queue:
-    image: rabbitmq:3
+    # image: rabbitmq:3
     # Using the below image instead is required to enable the "Broker" tab in the flower UI:
-    # image: rabbitmq:3-management
+    image: rabbitmq:3-management
     #
     # You also have to change the flower command
     restart: always
@@ -77,7 +77,7 @@ services:
       - flower
       # For the "Broker" tab to work in the flower UI, uncomment the following command argument,
       # and change the queue service's image as well
-      # - "--broker_api=http://guest:guest@queue:15672/api//"
+      - "--broker_api=http://guest:guest@queue:15672/api//"
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
