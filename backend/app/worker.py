@@ -32,9 +32,16 @@ def dummy_task():
         f.write("hello!")
 
 
-@celery_app.task
-def simulate_tvl(sim_settings: dict) -> None:
-    sorted_population, population_index = populate(
+# @celery_app.task(name="simulate_tvl")
+@celery_app.task(
+    bind=True,
+    autoretry_for=(Exception,),
+    retry_backoff=True,
+    retry_kwargs={"max_retries": 5},
+    name="app.worker.simulate_tvl",
+)
+def simulate_tvl(_self, sim_settings: dict) -> None:
+    sorted_population, _population_index = populate(
         size=sim_settings["size"],
         lower_bound=sim_settings["lower_bound"],
         upper_bound=sim_settings["upper_bound"],
@@ -45,14 +52,19 @@ def simulate_tvl(sim_settings: dict) -> None:
     tvl_value = tvl(
         talent=sorted_population, time=80, unlucky_event=0.3, lucky_event=0.3
     )
+
     most_successful_index = np.argmax(tvl_value)
 
-    # tvl_value.tofile("/tmp/tvl_value.csv",sep=",")
     file_name = sha256(json.dumps(sim_settings).encode()).hexdigest()
-    print(f"file_name: {file_name}")
-    np.savetxt(f"/tmp/tvl/{file_name}.csv", sorted_population, delimiter=",")
+
+    print(f"file_name: {file_name} (not saving to disk)")
+
+    # tvl_value.tofile("/tmp/tvl_value.csv",sep=",")
+    # np.savetxt(f"/tmp/tvl/{file_name}.csv", sorted_population, delimiter=",")
 
     print(f"Population is:{sorted_population.tolist()}")
     print(
         f"Highest position is:{tvl_value[most_successful_index]} with talent:{sorted_population[most_successful_index]}"
     )
+
+    return True

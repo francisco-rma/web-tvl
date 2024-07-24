@@ -35,14 +35,15 @@ def read_Tasks(
 def tvl(
     session: SessionDep,  # noqa: ARG001
     current_user: CurrentUser,  # noqa: ARG001
-    settings:TVLSettings
+    settings: TVLSettings,
 ) -> Any:
     """
     Generate a TVL simulation.
     """
-    settings.id_user=current_user.id
-    simulate_tvl(settings.model_dump())
-    return "Generated a TVL simulation."
+    settings.id_user = current_user.id
+    task = simulate_tvl.delay(settings.model_dump())
+    return task.id
+
 
 @router.get("/clear-storage")
 def clear(
