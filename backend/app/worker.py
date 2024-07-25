@@ -4,6 +4,7 @@ from datetime import datetime
 from hashlib import sha256
 
 import numpy as np
+import pandas as pd
 import sentry_sdk
 
 from app.core.celery_app import celery_app
@@ -49,6 +50,9 @@ def simulate_tvl(_self, sim_settings: dict) -> None:
         std=sim_settings["std"],
     )
 
+    if 'id_user' not in sim_settings.keys():
+        raise Exception("TASK EXCEPTION: missing \'id_user\' on simulation settings")
+
     tvl_value = tvl(
         talent=sorted_population, time=80, unlucky_event=0.3, lucky_event=0.3
     )
@@ -67,4 +71,10 @@ def simulate_tvl(_self, sim_settings: dict) -> None:
         f"Highest position is:{tvl_value[most_successful_index]} with talent:{sorted_population[most_successful_index]}"
     )
 
-    return True
+    df = pd.DataFrame(zip(sorted_population,tvl_value),columns=['talent,position'])
+    path = f"storage/tvl/{sim_settings['id_user']}/{file_name}.parquet"
+    with open(path,) as file:
+        df.to_parquet(file)    
+    
+    return 
+
