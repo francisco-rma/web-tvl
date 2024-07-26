@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from app.api.deps import CurrentUser, SessionDep
 from app.models import TVLSettings
-from app.worker import simulate_tvl
+from app.worker import simulate_tvl, retrieve_task_status
 
 
 class TaskOut(BaseModel):
@@ -41,8 +41,20 @@ def tvl(
     Generate a TVL simulation.
     """
     settings.id_user = current_user.id
-    task = simulate_tvl.delay(settings.model_dump())
+    task = simulate_tvl.delay(settings.model_dump_json())
     return task.id
+
+
+@router.get("/list-tasks")
+def get_task_status(
+    session: SessionDep,  # noqa: ARG001
+    current_user: CurrentUser,  # noqa: ARG001
+) -> Any:
+    """
+    List available tasks.
+    """
+
+    return retrieve_task_status()
 
 
 @router.get("/clear-storage")

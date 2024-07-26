@@ -117,4 +117,7 @@ class TVLSettings(BaseModel):
     upper_bound: float
     mean: float
     std: float
+    iterations: int
+    unlucky_event: float
+    lucky_event: float
     id_user: int | None = None
