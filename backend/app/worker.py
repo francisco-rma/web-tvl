@@ -2,6 +2,8 @@ import json
 import os
 from datetime import datetime
 from hashlib import sha256
+from pathlib import Path
+import traceback
 
 import numpy as np
 import pandas as pd
@@ -42,6 +44,7 @@ def dummy_task():
     name="app.worker.simulate_tvl",
 )
 def simulate_tvl(_self, sim_settings: dict) -> None:
+    success = True
     sorted_population, _population_index = populate(
         size=sim_settings["size"],
         lower_bound=sim_settings["lower_bound"],
@@ -50,8 +53,8 @@ def simulate_tvl(_self, sim_settings: dict) -> None:
         std=sim_settings["std"],
     )
 
-    if 'id_user' not in sim_settings.keys():
-        raise Exception("TASK EXCEPTION: missing \'id_user\' on simulation settings")
+    if "id_user" not in sim_settings.keys():
+        raise Exception("TASK EXCEPTION: missing 'id_user' on simulation settings")
 
     tvl_value = tvl(
         talent=sorted_population, time=80, unlucky_event=0.3, lucky_event=0.3
@@ -61,20 +64,21 @@ def simulate_tvl(_self, sim_settings: dict) -> None:
 
     file_name = sha256(json.dumps(sim_settings).encode()).hexdigest()
 
-    print(f"file_name: {file_name} (not saving to disk)")
-
-    # tvl_value.tofile("/tmp/tvl_value.csv",sep=",")
-    # np.savetxt(f"/tmp/tvl/{file_name}.csv", sorted_population, delimiter=",")
-
-    print(f"Population is:{sorted_population.tolist()}")
     print(
         f"Highest position is:{tvl_value[most_successful_index]} with talent:{sorted_population[most_successful_index]}"
     )
 
-    df = pd.DataFrame(zip(sorted_population,tvl_value),columns=['talent,position'])
-    path = f"storage/tvl/{sim_settings['id_user']}/{file_name}.parquet"
-    with open(path,) as file:
-        df.to_parquet(file)    
-    
-    return 
+    try:
+        pathstr = f"/storage/tvl/{sim_settings['id_user']}/{file_name}.parquet"
+        path = Path(pathstr).mkdir(parents=True, exist_ok=True)
+        pd.DataFrame(
+            zip(sorted_population, tvl_value), columns=["talent", "position"]
+        ).to_parquet(path)
 
+    except Exception as e:
+        success = False
+        traceback_str = f"Error: {str(e)}\nTraceback: {traceback.format_exc()}"
+        print("\n" + traceback_str)
+
+    finally:
+        return file_name if success else f"TASK FAILED: \n{traceback_str}"
