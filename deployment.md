@@ -144,6 +144,7 @@ You can set several variables, like:
 * `POSTGRES_USER`: The Postgres user, you can leave the default.
 * `POSTGRES_DB`: The database name to use for this application. You can leave the default of `app`.
 * `SENTRY_DSN`: The DSN for Sentry, if you are using it.
+* `FLOWER_BASIC_AUTH`: The HTTP Basic Auth for Flower, like `admin:changethis`.
 
 ## GitHub Actions Environment Variables
 
@@ -293,6 +294,8 @@ Backend API base URL: `https://fastapi-project.example.com/api/`
 
 Adminer: `https://adminer.fastapi-project.example.com`
 
+Flower: `https://flower.fastapi-project.example.com`
+
 ### Staging
 
 Frontend: `https://staging.fastapi-project.example.com`
@@ -301,4 +304,4 @@ Backend API docs: `https://staging.fastapi-project.example.com/docs`
 
 Backend API base URL: `https://staging.fastapi-project.example.com/api/`
 
-Adminer: `https://adminer.staging.fastapi-project.example.com`
+Adminer: `https://staging.adminer.fastapi-project.example.com`
