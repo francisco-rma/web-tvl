@@ -156,6 +156,8 @@ Automatic Alternative Docs (ReDoc): http://localhost/redoc
 
 Adminer: http://localhost:8080
 
+Flower: http://localhost:5555
+
 Traefik UI: http://localhost:8090
 
 ### Development in localhost with a custom domain URLs
@@ -171,5 +173,7 @@ Automatic Interactive Docs (Swagger UI): http://localhost.tiangolo.com/docs
 Automatic Alternative Docs (ReDoc): http://localhost.tiangolo.com/redoc
 
 Adminer: http://localhost.tiangolo.com:8080
+
+Flower: http://localhost.tiangolo.com:5555
 
 Traefik UI: http://localhost.tiangolo.com:8090
