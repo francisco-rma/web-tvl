@@ -1,0 +1,8 @@
+<app-menu></app-menu>
+@if (tasks$ | async; as tasks){
+<div *ngFor="let task of tasks" class="task">
+    <div class="task-header">
+        <div class="task-title">{{task}}</div>
+    </div>
+</div>
+}

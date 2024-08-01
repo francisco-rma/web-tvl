@@ -23,13 +23,16 @@ router = APIRouter()
 
 @router.post("/login/access-token")
 def login_access_token(
-    session: SessionDep, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+    session: SessionDep, request: Annotated[OAuth2PasswordRequestForm, Depends()]
 ) -> Token:
     """
     OAuth2 compatible token login, get an access token for future requests
     """
+
+    print("form_data: ", request)
+
     user = crud.authenticate(
-        session=session, email=form_data.username, password=form_data.password
+        session=session, email=request.username, password=request.password
     )
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")

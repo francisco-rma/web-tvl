@@ -1,0 +1,14 @@
+<div class="login-container">
+    <h2>Login</h2>
+    <form (submit)="submit()" [formGroup]="loginForm">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" formControlName="username" placeholder="Enter your username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" formControlName="password" placeholder="Enter your password">
+        </div>
+        <button type="button" (click)="submit()">Login</button>
+    </form>
+</div>

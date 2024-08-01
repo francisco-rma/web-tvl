@@ -122,3 +122,21 @@ def retrieve_task_status() -> None:
         print(str(e))
     finally:
         return status
+
+
+def list_tasks() -> dict:
+    status = None
+    try:
+        i = celery_app.control.inspect()
+        status = {
+            "registered": i.registered(),
+            "active": i.active(),
+            "reserved": i.reserved(),
+            "revoked": i.revoked(),
+            "stats": i.stats(),
+        }
+        pass
+    except Exception as e:
+        print(str(e))
+    finally:
+        return status
